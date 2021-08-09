@@ -1,9 +1,10 @@
 import { GustoMusicalService } from './../../services/gusto-musical.service';
 import { Component, OnInit } from '@angular/core';
-import { Gusto } from './gusto';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import swal from 'sweetalert2';
+import { Tipo } from '../tipo-musica/tipo';
 
 @Component({
   selector: 'app-gusto-musical',
@@ -11,9 +12,9 @@ import swal from 'sweetalert2';
   styleUrls: ['./gusto-musical.component.css']
 })
 export class GustoMusicalComponent implements OnInit {
-  gustos!: Gusto[];
+  gustos: Tipo[] = [];
   paginador: any;
-  gustoSeleccionado!: Gusto;
+  gustoSeleccionado!: Tipo;
 
   constructor(private gustoService: GustoMusicalService,
               private activatedRoute: ActivatedRoute,
@@ -30,13 +31,13 @@ export class GustoMusicalComponent implements OnInit {
       this.gustoService
           .getGustoMusicales(page)
           .subscribe((response) =>{
-            this.gustos = response.content as Gusto[]
+            this.gustos = response.content as Tipo[]
             this.paginador = response;
           })
     })
   }
 
-  public delete(gusto: Gusto):void{
+  public delete(gusto: Tipo):void{
     const swalWithBootstrapButtons =swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
@@ -48,7 +49,7 @@ export class GustoMusicalComponent implements OnInit {
     swalWithBootstrapButtons
       .fire({
         title: 'Está seguro?',
-        text: `¿Seguro que desea eliminar el gusto con el mail ${gusto.email} asociado al usuario ${gusto.usuario.nombre}?`,
+        text: `¿Seguro que desea eliminar el gusto ${gusto.nombre}?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Si, eliminar!',
@@ -61,7 +62,7 @@ export class GustoMusicalComponent implements OnInit {
             this.gustos = this.gustos.filter((ga) => ga !== gusto);
             
             swalWithBootstrapButtons.fire(
-              'Gusto eliminado!',
+              'Tipo de musica eliminado!',
               ` eliminado con éxito.`,
               'success'
             );

@@ -1,1 +1,67 @@
-<p>form works!</p>
+<ul class="alert alert-danger" *ngIf="errores.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err }}
+    </li>
+</ul>
+<div class="card bg-dark text-white my-4 ">
+    <div class="card-header">{{ titulo }}</div>
+    <div class="card-body">
+        <form #gustoForm="ngForm">
+            <div class="form-group row">
+                <label for="email" class="col-form-label col-sm-2">Su email</label
+                    >
+                    <div class="col-sm-6">
+                        <input
+                           type="email"
+                           class="form-control"
+                           [(ngModel)]="gusto.email"
+                            name="email"
+                            #email="ngModel"
+                            >
+                            <div 
+                                class="alert alert-danger"
+                                *ngIf="email.invalid && (email.dirty || email.touched)"
+                            >
+                            <div *ngIf="email.errors?.required">
+                                El email es requerido
+                            </div>
+
+                            </div>
+                    </div>
+            </div>
+            <div class="form-group row">
+                <label for="nombre" class="col-form-label col-sm-2">Tipo de Musica</label>
+                <div class="col-sm-6">
+
+                    <input type="text" class="form-control" [(ngModel)]="gusto.nombre" name="nombre" #nombre="ngModel">
+                    <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                        <div *ngIf="nombre.errors?.required">
+                            Nombre del gusto es requerido
+                        </div>
+                        <div *ngIf="nombre.errors?.minlength">
+                            Nombre debe tener 3 caracteres como minimo
+                        </div>
+                        <div *ngIf="nombre.errors?.maxlength">
+                            Nombre debe tener 90 caracteres como máximo
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary" role="button" (click)="create()" *ngIf="!gusto.id; else elseBlock" [disabled]="!gustoForm.form.valid">
+                        Crear
+                      </button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-primary" role="button" (click)="update()" [disabled]="!gustoForm.form.valid">
+                            Editar
+                          </button>
+                    </ng-template>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>

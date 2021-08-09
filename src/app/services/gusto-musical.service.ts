@@ -3,23 +3,30 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Gusto } from '../components/gusto-musical/gusto';
+import { Tipo } from '../components/tipo-musica/tipo';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GustoMusicalService {
-  private urlEndPoint: string = 'http://localhost:8080/api/gustos';
+  private urlEndPoint: string = 'http://localhost:8080/api/tipos';
 
   constructor(  private http: HttpClient,
     private router: Router) { }
 
+  // getTipo():Observable<Tipo[]>{
+  //   return this.http.get<Tipo[]>(`${this.urlEndPoint}/tipos`).pipe(
+  //     catchError(e =>{
+  //       return throwError(e)
+  //     })
+  //   )
+  // }
   getGustoMusicales(page: number): Observable<any>{
     return this.http.get(`${this.urlEndPoint}/page/${page}`).pipe(
       map((response: any) =>{
-        (response.content as Gusto[]).map((gusto)=>{
-          gusto.usuario.nombre = gusto.usuario.nombre.toUpperCase();
-          gusto.tipoMusica.nombre =gusto.tipoMusica.nombre.toUpperCase()
+        (response.content as Tipo[]).map((gusto)=>{
+          gusto.nombre = gusto.nombre.toUpperCase();
+          gusto.email = gusto.email.toUpperCase();
           return gusto
         });
         return response
@@ -27,11 +34,11 @@ export class GustoMusicalService {
     )
   }
 
-  create(gusto: Gusto): Observable<Gusto>{
+  create(gusto: Tipo): Observable<Tipo>{
     return this.http
       .post(this.urlEndPoint,gusto)
       .pipe(
-        map((response: any) => response.gusto as Gusto),
+        map((response: any) => response.gusto as Tipo),
         catchError((e)=>{
            // el estado 400 viene de la validacion, un bad request
            if (e.status === 400) {
@@ -45,9 +52,9 @@ export class GustoMusicalService {
       )
   }
 
-  getGusto(id:number): Observable<Gusto>{
+  getGusto(id:number): Observable<Tipo>{
     return this.http
-      .get<Gusto>(`${this.urlEndPoint}/${id}`)
+      .get<Tipo>(`${this.urlEndPoint}/${id}`)
       .pipe(
         catchError((e)=>{
           if(e.status != 401 && e.error.mensaje){
@@ -62,9 +69,25 @@ export class GustoMusicalService {
       )
   }
 
-  delete(id:number): Observable<Gusto>{
+  update(gusto: Tipo): Observable<any>{
     return this.http
-      .delete<Gusto>(`${this.urlEndPoint}/${id}`)
+    .put<any>(`${this.urlEndPoint}/${gusto.id}`,gusto)
+    .pipe(
+      catchError((e)=>{
+        if (e.status === 400) {
+          return throwError(e);
+        }
+        if(e.error.mensaje){
+          console.error(e.error.mensaje);
+          }
+          return throwError(e);
+      })
+    )
+  }
+
+  delete(id:number): Observable<Tipo>{
+    return this.http
+      .delete<Tipo>(`${this.urlEndPoint}/${id}`)
       .pipe(
         catchError((e)=>{
           if(e.error.mensaje){

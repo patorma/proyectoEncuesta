@@ -31,9 +31,8 @@ import { TokenInterceptorService } from './services/token-interceptor.service';
     LoginComponent,
     Form1Component,
     Form2Component,
-    
     PaginatorComponent,
-    Paginator2Component
+    Paginator2Component,
    
   ],
   imports: [
